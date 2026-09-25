@@ -21,3 +21,21 @@ export function parseDealValue(value: string | number | null | undefined): numbe
   const n = Number.parseFloat(value);
   return Number.isFinite(n) ? n : 0;
 }
+
+export function formatPercent(rate: number): string {
+  if (!Number.isFinite(rate)) return "—";
+  return new Intl.NumberFormat("it-IT", {
+    style: "percent",
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 0,
+  }).format(rate);
+}
+
+export function formatDateTimeIt(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return new Intl.DateTimeFormat("it-IT", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(d);
+}

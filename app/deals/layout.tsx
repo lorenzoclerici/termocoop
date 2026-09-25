@@ -1,5 +1,5 @@
 import { AppShell } from "@/components/AppShell";
-import { PipelineNav } from "@/components/PipelineNav";
+import { SidebarNav } from "@/components/SidebarNav";
 import { RelatiaApiError } from "@/lib/relatia/client";
 import { listPipelinesForNav } from "@/lib/relatia/pipelines";
 
@@ -31,7 +31,7 @@ export default async function DealsLayout({
             Sidebar non disponibile.
           </p>
         ) : (
-          <PipelineNav pipelines={pipelines} />
+          <SidebarNav pipelines={pipelines} />
         )
       }
     >

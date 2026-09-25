@@ -32,8 +32,14 @@ export default async function PipelineDetailPage({ params }: PageProps) {
           meta={
             <div className="flex flex-col items-end gap-1">
               <Link
-                href="/pipelines"
+                href={`/pipelines/${id}/stats`}
                 className="text-brand-orange hover:underline"
+              >
+                Statistiche
+              </Link>
+              <Link
+                href="/pipelines"
+                className="text-muted hover:text-ink"
               >
                 Tutte le pipeline
               </Link>
