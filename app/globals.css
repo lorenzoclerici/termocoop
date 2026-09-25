@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --brand-orange: #df652d;
+  --brand-crimson: #bf2f49;
+  --brand-green: #39b54a;
+  --ink: #313131;
+  --slate: #54595f;
+  --muted: #7a7a7a;
+  --border: #e3e7ea;
+  --surface: #ffffff;
+  --canvas: #f7f8f9;
+}
+
+@theme inline {
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-crimson: var(--brand-crimson);
+  --color-brand-green: var(--brand-green);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+
+  --font-sans: var(--font-roboto), Roboto, Arial, sans-serif;
+  --font-slab: var(--font-roboto-slab), "Roboto Slab", Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--brand-orange);
+  outline-offset: 2px;
+}
