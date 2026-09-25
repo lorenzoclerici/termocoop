@@ -1,0 +1,70 @@
+{
+  "trigger": {
+    "id": "9476ca07-0101-4376-9325-ec32bc65d3d9",
+    "type": "deal_stage_changed",
+    "name": "Test locale - Albano Comparatore",
+    "timestamp": "2026-09-25T12:00:00.000000+00:00"
+  },
+  "contact": {
+    "id": "857e65b0-b084-4805-ae83-2fa9c079d965",
+    "email": "test.fixture@example.com",
+    "phone": "3400000000",
+    "first_name": "Mario",
+    "last_name": "Rossi",
+    "full_name": "Mario Rossi",
+    "company": "",
+    "source": {
+      "id": "10",
+      "name": "Ufficio Tecnico - Termocoop",
+      "key": "ufficio-tecnico-termocoop"
+    },
+    "source_details": {},
+    "lead_score": 10,
+    "assigned_to": null,
+    "created_at": "2026-09-10T09:30:45.601572+00:00",
+    "updated_at": "2026-09-10T09:30:45.601583+00:00"
+  },
+  "custom_fields": {
+    "Indirizzo": "Via Esempio 1",
+    "cap": "Albano Laziale - 00041",
+    "tip_ric": "Fotovoltaico residenziale",
+    "orario_di_ricontatto": "ora",
+    "provenienza_lead": "Comparatore"
+  },
+  "context": {
+    "timestamp": "2026-09-25T12:00:00.100000+00:00",
+    "trigger_id": "9476ca07-0101-4376-9325-ec32bc65d3d9"
+  },
+  "deal": {
+    "id": "0df6a0ec-f47c-4d98-b254-0e7d2a1f53a9",
+    "name": "Mario Rossi - Albano comparatore (€5,000)",
+    "value": 5000,
+    "status": "open",
+    "pipeline": {
+      "id": "a66f724f-bda8-4c28-8df4-729de0cb5f85",
+      "name": "Albano comparatore",
+      "type": "deal"
+    },
+    "current_stage": {
+      "id": "b3ac0a82-8838-4ba2-840b-82c3dc4147df",
+      "name": "Accettato",
+      "key": "accettato_comparatorealbano",
+      "probability": 0
+    },
+    "assigned_to": null,
+    "created_at": "2026-09-10T09:30:45.787933+00:00",
+    "updated_at": "2026-09-25T12:00:00.000000+00:00"
+  },
+  "stage_change": {
+    "from": {
+      "id": "01d91f10-aaaa-4ba2-840b-82c3dc4147df",
+      "name": "Eseguito Sopralluogo",
+      "key": "eseguito_comparatorealbano"
+    },
+    "to": {
+      "id": "b3ac0a82-8838-4ba2-840b-82c3dc4147df",
+      "name": "Accettato",
+      "key": "accettato_comparatorealbano"
+    }
+  }
+}

@@ -16,6 +16,8 @@ type SidebarNavProps = {
 export function SidebarNav({ pipelines }: SidebarNavProps) {
   const pathname = usePathname();
   const statsActive = pathname === "/stats" || pathname.startsWith("/stats/");
+  const eventsActive =
+    pathname === "/events" || pathname.startsWith("/events/");
 
   return (
     <div className="space-y-4">
@@ -23,17 +25,30 @@ export function SidebarNav({ pipelines }: SidebarNavProps) {
         <p className="px-2 pb-1 text-xs font-medium text-muted">
           Analisi
         </p>
-        <Link
-          href="/stats"
-          className={[
-            "block rounded px-2 py-2 text-sm",
-            statsActive
-              ? "bg-brand-orange/10 font-medium text-brand-orange"
-              : "text-slate hover:bg-canvas hover:text-ink",
-          ].join(" ")}
-        >
-          Statistiche
-        </Link>
+        <div className="space-y-0.5">
+          <Link
+            href="/stats"
+            className={[
+              "block rounded px-2 py-2 text-sm",
+              statsActive
+                ? "bg-brand-orange/10 font-medium text-brand-orange"
+                : "text-slate hover:bg-canvas hover:text-ink",
+            ].join(" ")}
+          >
+            Statistiche
+          </Link>
+          <Link
+            href="/events"
+            className={[
+              "block rounded px-2 py-2 text-sm",
+              eventsActive
+                ? "bg-brand-orange/10 font-medium text-brand-orange"
+                : "text-slate hover:bg-canvas hover:text-ink",
+            ].join(" ")}
+          >
+            Movimenti
+          </Link>
+        </div>
       </div>
 
       <div>
