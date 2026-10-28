@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { formatEuro, formatPercent } from "@/lib/format";
 import { buildBaciniStats, type BacinoStats } from "@/lib/stats/bacini";
@@ -13,11 +13,6 @@ type Props = {
 
 export function BaciniView({ pipelines }: Props) {
   const bacini = useMemo(() => buildBaciniStats(pipelines), [pipelines]);
-  const [selected, setSelected] = useState<string | null>(
-    bacini[0]?.key ?? null,
-  );
-
-  const active = bacini.find((b) => b.key === selected) ?? bacini[0] ?? null;
   const maxRate = Math.max(...bacini.map((b) => b.conversionRate), 0.001);
   const maxConvertedValue = Math.max(
     ...bacini.map((b) => b.convertedValue),
@@ -35,41 +30,35 @@ export function BaciniView({ pipelines }: Props) {
   return (
     <div className="space-y-8">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {bacini.map((b) => {
-          const isActive = active?.key === b.key;
-          return (
-            <button
-              key={b.key}
-              type="button"
-              onClick={() => setSelected(b.key)}
-              className={[
-                "border bg-surface p-4 text-left transition-colors",
-                isActive
-                  ? "border-brand-orange ring-1 ring-brand-orange/40"
-                  : "border-border hover:border-brand-orange/50",
-              ].join(" ")}
-            >
-              <p className="text-sm font-medium text-ink">{b.label}</p>
-              <p className="mt-2 text-2xl font-semibold tabular-nums text-brand-green">
-                {formatPercent(b.conversionRate)}
-              </p>
-              <p className="mt-1 text-xs text-muted">
-                {b.convertedCount}/{b.dealCount} convertiti ·{" "}
-                {b.pipelineCount} pipeline
-              </p>
-              <p className="mt-2 text-sm tabular-nums text-slate">
-                {formatEuro(b.convertedValue)}
-              </p>
-            </button>
-          );
-        })}
+        {bacini.map((b) => (
+          <Link
+            key={b.key}
+            href={`/stats/bacini/${encodeURIComponent(b.key)}`}
+            className="border border-border bg-surface p-4 text-left transition-colors hover:border-brand-orange"
+          >
+            <p className="text-sm font-medium text-ink">{b.label}</p>
+            <p className="mt-2 text-2xl font-semibold tabular-nums text-brand-green">
+              {formatPercent(b.conversionRate)}
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              {b.convertedCount}/{b.dealCount} convertiti · {b.pipelineCount}{" "}
+              pipeline
+            </p>
+            <p className="mt-2 text-sm tabular-nums text-slate">
+              {formatEuro(b.convertedValue)}
+            </p>
+            <p className="mt-3 text-xs font-medium text-brand-orange">
+              Vedi pipeline →
+            </p>
+          </Link>
+        ))}
       </div>
 
       <div className="overflow-x-auto border border-border bg-surface">
         <div className="border-b border-border px-4 py-3">
           <h2 className="text-sm font-medium text-ink">Confronto bacini</h2>
           <p className="mt-0.5 text-xs text-muted">
-            Statistiche accorpate dalle pipeline di ciascun territorio.
+            Clicca un bacino per vedere le statistiche di tutte le sue pipeline.
           </p>
         </div>
         <table className="min-w-full text-left text-sm">
@@ -89,19 +78,15 @@ export function BaciniView({ pipelines }: Props) {
             {bacini.map((b) => (
               <tr
                 key={b.key}
-                className={[
-                  "border-b border-border last:border-b-0 hover:bg-canvas/80",
-                  active?.key === b.key ? "bg-brand-orange/5" : "",
-                ].join(" ")}
+                className="border-b border-border last:border-b-0 hover:bg-canvas/80"
               >
                 <td className="px-4 py-3">
-                  <button
-                    type="button"
-                    onClick={() => setSelected(b.key)}
+                  <Link
+                    href={`/stats/bacini/${encodeURIComponent(b.key)}`}
                     className="font-medium text-ink hover:text-brand-orange"
                   >
                     {b.label}
-                  </button>
+                  </Link>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-slate">
                   {b.pipelineCount}
@@ -148,8 +133,6 @@ export function BaciniView({ pipelines }: Props) {
           barClass="bg-brand-orange"
         />
       </div>
-
-      {active ? <BacinoDetail bacino={active} /> : null}
     </div>
   );
 }
@@ -181,7 +164,12 @@ function ComparisonBars({
           return (
             <li key={b.key} className="px-4 py-3">
               <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="font-medium text-ink">{b.label}</span>
+                <Link
+                  href={`/stats/bacini/${encodeURIComponent(b.key)}`}
+                  className="font-medium text-ink hover:text-brand-orange"
+                >
+                  {b.label}
+                </Link>
                 <span className="tabular-nums text-slate">{format(v)}</span>
               </div>
               <div className="mt-2 h-2 w-full bg-canvas">
@@ -191,71 +179,6 @@ function ComparisonBars({
           );
         })}
       </ul>
-    </div>
-  );
-}
-
-function BacinoDetail({ bacino }: { bacino: BacinoStats }) {
-  return (
-    <div className="border border-border bg-surface">
-      <div className="border-b border-border px-4 py-3">
-        <h2 className="text-sm font-medium text-ink">
-          Pipeline in {bacino.label}
-        </h2>
-        <p className="mt-0.5 text-xs text-muted">
-          Dettaglio delle {bacino.pipelineCount} pipeline accorpate in questo
-          bacino. Mix: Accettato {bacino.mix.accettato.count} · Accettato
-          convertito {bacino.mix.accettatoConvertito.count}.
-        </p>
-      </div>
-      {!bacino.pipelines.length ? (
-        <p className="p-4 text-sm text-muted">Nessuna pipeline in questo bacino.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-border bg-canvas text-muted">
-              <tr>
-                <th className="px-4 py-3 font-medium">Pipeline</th>
-                <th className="px-4 py-3 font-medium">Linea</th>
-                <th className="px-4 py-3 font-medium text-right">Deal</th>
-                <th className="px-4 py-3 font-medium text-right">Convertiti</th>
-                <th className="px-4 py-3 font-medium text-right">Tasso</th>
-                <th className="px-4 py-3 font-medium text-right">Valore conv.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bacino.pipelines.map((p) => (
-                <tr
-                  key={p.id}
-                  className="border-b border-border last:border-b-0 hover:bg-canvas/80"
-                >
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/pipelines/${p.id}/stats`}
-                      className="font-medium text-ink hover:text-brand-orange"
-                    >
-                      {p.name}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-slate">{p.linea}</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-slate">
-                    {p.dealCount}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-brand-green">
-                    {p.convertedCount}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-ink">
-                    {formatPercent(p.conversionRate)}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-ink">
-                    {formatEuro(p.convertedValue)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }

@@ -119,3 +119,11 @@ export function baciniToAggregateBuckets(bacini: BacinoStats[]): AggregateBucket
     totalValue: b.totalValue,
   }));
 }
+
+export function findBacinoStats(
+  pipelines: PipelineStatsSummary[],
+  bacinoKey: string,
+): BacinoStats | null {
+  const key = decodeURIComponent(bacinoKey).trim().toLowerCase();
+  return buildBaciniStats(pipelines).find((b) => b.key === key) ?? null;
+}

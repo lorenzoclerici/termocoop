@@ -16,8 +16,7 @@ type SidebarNavProps = {
 export function SidebarNav({ pipelines }: SidebarNavProps) {
   const pathname = usePathname();
   const statsActive = pathname === "/stats";
-  const baciniActive =
-    pathname === "/stats/bacini" || pathname.startsWith("/stats/bacini/");
+  const baciniActive = pathname.startsWith("/stats/bacini");
   const eventsActive =
     pathname === "/events" || pathname.startsWith("/events/");
 
