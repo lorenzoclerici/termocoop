@@ -69,7 +69,8 @@ export function StatsOverviewClient({ overview }: Props) {
         <AggregateTable
           title="Per bacino"
           rows={overview.byBacino}
-          actionLabel="Vai alle stats"
+          rowHref={(row) => `/stats/bacini/${encodeURIComponent(row.key)}`}
+          actionLabel="Apri"
           actionHref={(row) => `/stats/bacini/${encodeURIComponent(row.key)}`}
         />
       ) : (
@@ -154,11 +155,13 @@ function PipelineTable({ pipelines }: { pipelines: PipelineStatsSummary[] }) {
 function AggregateTable({
   title,
   rows,
+  rowHref,
   actionLabel,
   actionHref,
 }: {
   title: string;
   rows: AggregateBucket[];
+  rowHref?: (row: AggregateBucket) => string;
   actionLabel?: string;
   actionHref?: (row: AggregateBucket) => string;
 }) {
@@ -188,7 +191,18 @@ function AggregateTable({
               key={row.key}
               className="border-b border-border last:border-b-0 hover:bg-canvas/80"
             >
-              <td className="px-4 py-3 font-medium text-ink">{row.label}</td>
+              <td className="px-4 py-3 font-medium text-ink">
+                {rowHref ? (
+                  <Link
+                    href={rowHref(row)}
+                    className="text-ink hover:text-brand-orange hover:underline"
+                  >
+                    {row.label}
+                  </Link>
+                ) : (
+                  row.label
+                )}
+              </td>
               <td className="px-4 py-3 text-right tabular-nums text-slate">
                 {row.dealCount}
               </td>
