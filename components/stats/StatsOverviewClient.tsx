@@ -65,11 +65,15 @@ export function StatsOverviewClient({ overview }: Props) {
 
       {mode === "pipeline" ? (
         <PipelineTable pipelines={overview.pipelines} />
-      ) : (
+      ) : mode === "bacino" ? (
         <AggregateTable
-          title={mode === "bacino" ? "Per bacino" : "Per linea"}
-          rows={mode === "bacino" ? overview.byBacino : overview.byLinea}
+          title="Per bacino"
+          rows={overview.byBacino}
+          actionLabel="Vai alle stats"
+          actionHref={(row) => `/stats/bacini/${encodeURIComponent(row.key)}`}
         />
+      ) : (
+        <AggregateTable title="Per linea" rows={overview.byLinea} />
       )}
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -150,10 +154,16 @@ function PipelineTable({ pipelines }: { pipelines: PipelineStatsSummary[] }) {
 function AggregateTable({
   title,
   rows,
+  actionLabel,
+  actionHref,
 }: {
   title: string;
   rows: AggregateBucket[];
+  actionLabel?: string;
+  actionHref?: (row: AggregateBucket) => string;
 }) {
+  const showAction = Boolean(actionLabel && actionHref);
+
   return (
     <div className="overflow-x-auto border border-border bg-surface">
       <div className="border-b border-border px-4 py-3">
@@ -167,6 +177,9 @@ function AggregateTable({
             <th className="px-4 py-3 font-medium text-right">Convertiti</th>
             <th className="px-4 py-3 font-medium text-right">Tasso</th>
             <th className="px-4 py-3 font-medium text-right">Valore conv.</th>
+            {showAction ? (
+              <th className="px-4 py-3 font-medium text-right">Azioni</th>
+            ) : null}
           </tr>
         </thead>
         <tbody>
@@ -188,6 +201,16 @@ function AggregateTable({
               <td className="px-4 py-3 text-right tabular-nums text-ink">
                 {formatEuro(row.convertedValue)}
               </td>
+              {showAction && actionHref ? (
+                <td className="px-4 py-3 text-right">
+                  <Link
+                    href={actionHref(row)}
+                    className="inline-flex border border-brand-orange bg-brand-orange/10 px-3 py-1.5 text-sm font-medium text-brand-orange hover:bg-brand-orange/20"
+                  >
+                    {actionLabel}
+                  </Link>
+                </td>
+              ) : null}
             </tr>
           ))}
         </tbody>
