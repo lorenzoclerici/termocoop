@@ -16,6 +16,16 @@ export function AppShell({ children, sidebar }: AppShellProps) {
           </Link>
         </div>
         <nav className="flex-1 overflow-y-auto px-2 py-3">{sidebar}</nav>
+        <div className="border-t border-border p-3">
+          <form action="/api/auth/logout" method="post">
+            <button
+              type="submit"
+              className="w-full px-2 py-2 text-left text-sm text-slate hover:bg-canvas hover:text-ink"
+            >
+              Esci
+            </button>
+          </form>
+        </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">{children}</div>
     </div>
