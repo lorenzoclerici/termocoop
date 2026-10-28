@@ -15,7 +15,9 @@ type SidebarNavProps = {
 
 export function SidebarNav({ pipelines }: SidebarNavProps) {
   const pathname = usePathname();
-  const statsActive = pathname === "/stats" || pathname.startsWith("/stats/");
+  const statsActive = pathname === "/stats";
+  const baciniActive =
+    pathname === "/stats/bacini" || pathname.startsWith("/stats/bacini/");
   const eventsActive =
     pathname === "/events" || pathname.startsWith("/events/");
 
@@ -36,6 +38,17 @@ export function SidebarNav({ pipelines }: SidebarNavProps) {
             ].join(" ")}
           >
             Statistiche
+          </Link>
+          <Link
+            href="/stats/bacini"
+            className={[
+              "block rounded px-2 py-2 text-sm",
+              baciniActive
+                ? "bg-brand-orange/10 font-medium text-brand-orange"
+                : "text-slate hover:bg-canvas hover:text-ink",
+            ].join(" ")}
+          >
+            Per bacino
           </Link>
           <Link
             href="/events"

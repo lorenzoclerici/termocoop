@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { PageHeader } from "@/components/PageHeader";
 import { StatsOverviewClient } from "@/components/stats/StatsOverviewClient";
@@ -17,10 +19,18 @@ export default async function StatsPage() {
           title="Statistiche"
           description="Conversione per pipeline, bacino, linea e sorgente. Snapshot live da Relatia."
           meta={
-            <span>
-              Aggiornato {formatDateTimeIt(overview.generatedAt)} · cache{" "}
-              {Math.round(overview.cacheTtlSeconds / 60)} min
-            </span>
+            <div className="flex flex-col items-end gap-1 text-sm">
+              <Link
+                href="/stats/bacini"
+                className="text-brand-orange hover:underline"
+              >
+                Vai alle stats per bacino
+              </Link>
+              <span>
+                Aggiornato {formatDateTimeIt(overview.generatedAt)} · cache{" "}
+                {Math.round(overview.cacheTtlSeconds / 60)} min
+              </span>
+            </div>
           }
         />
         <div className="p-6">

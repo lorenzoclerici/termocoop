@@ -1,4 +1,5 @@
-const KNOWN_BACINI = ["Albano", "CDL", "Pisa", "Roma"] as const;
+/** Ordine fisso dei bacini Termocoop (territorio). */
+export const KNOWN_BACINI = ["Roma", "Albano", "Pisa", "CDL"] as const;
 
 export type ParsedPipelineName = {
   bacino: string;
