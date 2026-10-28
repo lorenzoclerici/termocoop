@@ -9,8 +9,13 @@ function getAuthSecret(): string {
   return secret;
 }
 
-function toBase64Url(bytes: ArrayBuffer | Uint8Array): string {
-  const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+function toBase64Url(bytes: ArrayBuffer | Uint8Array | string): string {
+  const arr =
+    typeof bytes === "string"
+      ? new TextEncoder().encode(bytes)
+      : bytes instanceof Uint8Array
+        ? bytes
+        : new Uint8Array(bytes);
   let binary = "";
   for (const b of arr) binary += String.fromCharCode(b);
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -51,9 +56,11 @@ async function hmacSign(message: string, secret: string): Promise<string> {
 export async function createSessionToken(email: string): Promise<string> {
   const secret = getAuthSecret();
   const exp = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS;
-  const payload = `${email.toLowerCase()}.${exp}`;
-  const sig = await hmacSign(payload, secret);
-  return `${payload}.${sig}`;
+  const body = toBase64Url(
+    JSON.stringify({ e: email.toLowerCase(), exp }),
+  );
+  const sig = await hmacSign(body, secret);
+  return `${body}.${sig}`;
 }
 
 export async function verifySessionToken(
@@ -64,18 +71,14 @@ export async function verifySessionToken(
   const secret = process.env.AUTH_SECRET?.trim();
   if (!secret) return null;
 
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
+  const sep = token.lastIndexOf(".");
+  if (sep <= 0 || sep === token.length - 1) return null;
 
-  const [email, expRaw, sig] = parts;
-  if (!email || !expRaw || !sig) return null;
+  const body = token.slice(0, sep);
+  const sig = token.slice(sep + 1);
+  if (!body || !sig) return null;
 
-  const exp = Number(expRaw);
-  if (!Number.isFinite(exp) || exp * 1000 < Date.now()) return null;
-
-  const payload = `${email}.${expRaw}`;
-  const expected = await hmacSign(payload, secret);
-
+  const expected = await hmacSign(body, secret);
   try {
     const a = fromBase64Url(sig);
     const b = fromBase64Url(expected);
@@ -84,7 +87,19 @@ export async function verifySessionToken(
     return null;
   }
 
-  return { email };
+  try {
+    const json = new TextDecoder().decode(fromBase64Url(body));
+    const payload = JSON.parse(json) as { e?: unknown; exp?: unknown };
+    if (typeof payload.e !== "string" || typeof payload.exp !== "number") {
+      return null;
+    }
+    if (!Number.isFinite(payload.exp) || payload.exp * 1000 < Date.now()) {
+      return null;
+    }
+    return { email: payload.e };
+  } catch {
+    return null;
+  }
 }
 
 export function sessionCookieOptions(maxAge = SESSION_MAX_AGE_SECONDS) {
